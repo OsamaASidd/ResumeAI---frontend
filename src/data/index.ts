@@ -1,4 +1,14 @@
-export const HEADER_MENUS = ['Home', 'Market Place']
+
+export const HEADER_MENUS = [
+    {
+        path: '/home',
+        routeName: 'Home',
+    },
+    {
+        path: '/market-place',
+        routeName: 'Market Place',
+    },
+]
 
 
 export const SIDEBAR_MENUS = [
@@ -10,7 +20,7 @@ export const SIDEBAR_MENUS = [
     {
         path: '/enhance-resume',
         routeName: 'Enhance Resume',
-        icon: '../assets/user.svg',
+        icon: '/assets/user.svg',
         
     },
     {
@@ -31,3 +41,44 @@ export const SIDEBAR_MENUS = [
         
     }
 ];
+
+
+export const TEMPLATES_CATEGORIES = [
+    {
+        name: 'All Templates',
+        id: 'all',
+    },
+    {
+        name: 'Professional',
+        id: 'professional',
+    },
+    {
+        name: 'Creative',
+        id: 'creative',
+    },
+    {
+        name: 'Academic',
+        id: 'academic',
+    },
+    {
+        name: 'No Experienced Based',
+        id: 'no_experience',
+    },
+]
+
+
+export const MOCK_TEMPLATES = [
+    {
+      id: "1",
+      title: "Modern Professional",
+      category: "professional",
+      preview: "/assets/cv-template.svg",
+    },
+    {
+      id: "2",
+      title: "Creative Splash",
+      category: "creative",
+      preview:  "/assets/cv-template.svg",
+    },
+  ];
+  
