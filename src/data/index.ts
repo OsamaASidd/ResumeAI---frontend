@@ -8,6 +8,10 @@ export const HEADER_MENUS = [
         path: '/market-place',
         routeName: 'Market Place',
     },
+    {
+        path: '/profile',
+        routeName: 'My Profile',
+    }
 ]
 
 
