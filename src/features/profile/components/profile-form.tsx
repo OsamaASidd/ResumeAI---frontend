@@ -1,4 +1,3 @@
-// src/features/profile/components/profile-form.tsx
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSchema } from "../schemas";

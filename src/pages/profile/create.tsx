@@ -12,7 +12,7 @@ const ProfileCreatePage = () => {
   const handleSubmit = async (data: ProfileFormValues) => {
     try {
       await createProfile.mutateAsync(data);
-      navigate(ROUTE_CONSTANTS.PROFILE);
+      console.log("HEHEHEEE");
     } catch (error) {
       console.error("Failed to create profile:", error);
     }
