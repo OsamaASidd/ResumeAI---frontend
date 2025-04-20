@@ -1,15 +1,12 @@
-// src/auth/clerk-provider.tsx
-import { ClerkProvider } from "@clerk/clerk-react";
-import { ReactNode } from "react";
+// src/auth/use-auth.ts
+import { useAuth as useClerkAuth } from "@clerk/clerk-react";
 
-interface ClerkProviderProps {
-  children: ReactNode;
-}
-
-export const CustomClerkProvider = ({ children }: ClerkProviderProps) => {
-  return (
-    <ClerkProvider publishableKey={import.meta.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-      {children}
-    </ClerkProvider>
-  );
+export const useAuth = () => {
+  const { isSignedIn, isLoaded, userId } = useClerkAuth();
+  
+  return {
+    isSignedIn,
+    isLoaded,
+    userId
+  };
 };

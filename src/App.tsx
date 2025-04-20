@@ -1,7 +1,9 @@
 import './App.css';
-import { AppRoutes } from './routes/routes'; // ✅ this must be a named export
+import { AppRoutes } from './routes/routes';
+import { useAuthToken } from './auth/use-auth-token';
 
 function App() {
+   useAuthToken();
    return <AppRoutes />
 }
 
