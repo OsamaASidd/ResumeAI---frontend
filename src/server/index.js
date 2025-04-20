@@ -21,12 +21,12 @@ const api = j
     );
   });
 
-const appRouter = j.mergeRouters(api, {
-  user: userRouter,
-  job: jobRouter,
-  auth: authRouter,
-  profile: profileRouter,
-  resume: resumeRouter
-});
+  const appRouter = j.mergeRouters(api, {
+    user: userRouter,
+    job: jobRouter,
+    auth: authRouter,
+    profile: profileRouter,
+    resume: resumeRouter
+  });
 
 export default appRouter;

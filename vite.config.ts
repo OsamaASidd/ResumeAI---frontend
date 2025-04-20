@@ -1,12 +1,13 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { viteBackendServer } from './vite-server-plugin'
+import { viteBackendServer } from './vite-server-plugin.js'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    viteBackendServer(), // Add the backend server plugin
+    // Disable the backend server during development to avoid the import issue
+    viteBackendServer(),
   ],
   server: {
     port: 5173,

@@ -5,10 +5,11 @@ import 'dotenv/config';
 export default {
   schema: './src/server/db/schema/index.ts',
   out: './drizzle',
-  driver: 'pg',
+  dialect: 'postgresql',
+//   driver: 'pg',
   dbCredentials: {
-    connectionString: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL ?? '',
   },
-  verbose: true,
-  strict: true,
+//   verbose: true,
+//   strict: true,
 };

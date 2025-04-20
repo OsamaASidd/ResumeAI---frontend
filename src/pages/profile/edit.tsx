@@ -14,7 +14,7 @@ const ProfileEditPage = () => {
   
   const profile = useMemo(() => {
     if (!profiles || !id) return null;
-    return profiles.find((p) => p.id?.toString() === id);
+    return profiles.find((p) => p.id === id);
   }, [profiles, id]);
   
 

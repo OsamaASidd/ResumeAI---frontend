@@ -1,4 +1,4 @@
-// vite-server-plugin.js
+// vite-server-plugin.mjs
 import { createServer } from 'node:http';
 import { serve } from '@hono/node-server';
 import appRouter from './src/server/index.js';
