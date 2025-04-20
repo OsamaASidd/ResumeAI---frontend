@@ -1,8 +1,8 @@
 // src/server/routers/job-router.js
 import { z } from 'zod';
-import { j, privateProcedure } from '../lib/jstack';
-import { db } from '../db';
-import { jobs, profiles } from '../db/schema';
+import { j, privateProcedure } from '../lib/jstack.js';
+import { db } from '../db/index.js'; 
+import { jobs, profiles } from '../db/schema.js';
 import { eq, and } from 'drizzle-orm';
 
 const jobSchema = z.object({

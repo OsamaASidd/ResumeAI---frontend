@@ -1,9 +1,9 @@
 // src/server/routers/resume-router.js
 import { z } from 'zod';
-import { j, privateProcedure } from '../lib/jstack';
-import { db } from '../db';
-import { resumes } from '../db/schema';
-import { eq } from 'drizzle-orm';
+import { j, privateProcedure } from '../lib/jstack.js';
+import { db } from '../db/index.js'; 
+import { jobs, profiles } from '../db/schema.js';
+import { eq, and } from 'drizzle-orm';
 
 const resumeSchema = z.object({
   title: z.string().min(1),

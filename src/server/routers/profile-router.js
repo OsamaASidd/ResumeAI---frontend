@@ -1,9 +1,10 @@
 // src/server/routers/profile-router.js
 import { z } from 'zod';
-import { j, privateProcedure } from '../lib/jstack';
-import { db } from '../db';
-import { profiles, jobs, educations } from '../db/schema';
+import { j, privateProcedure } from '../lib/jstack.js';
+import { db } from '../db/index.js';
+import { profiles, jobs, educations } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
 const jobSchema = z.object({
   jobTitle: z.string().min(3),
@@ -57,10 +58,13 @@ export const profileRouter = j
     try {
       // Start a transaction
       return await db.transaction(async (tx) => {
-        // Create the profile
+        // Create the profile with a UUID
+        const profileId = randomUUID();
+        
         const [newProfile] = await tx
           .insert(profiles)
           .values({
+            id: profileId,
             userId: ctx.user.id,
             firstname: input.firstname,
             lastname: input.lastname,
@@ -79,8 +83,8 @@ export const profileRouter = j
               jobTitle: job.jobTitle,
               employer: job.employer,
               description: job.description,
-              startDate: new Date(job.startDate),
-              endDate: new Date(job.endDate),
+              startDate: job.startDate,
+              endDate: job.endDate,
               city: job.city,
             }))
           );
@@ -95,8 +99,8 @@ export const profileRouter = j
               degree: education.degree,
               field: education.field,
               description: education.description,
-              startDate: new Date(education.startDate),
-              endDate: new Date(education.endDate),
+              startDate: education.startDate,
+              endDate: education.endDate,
               city: education.city,
             }))
           );
@@ -125,12 +129,10 @@ export const profileRouter = j
     })
   ), async ({ ctx, input }) => {
     try {
-      const profileId = parseInt(input.id, 10);
-
       // Check if profile exists and belongs to user
       const existingProfile = await db.query.profiles.findFirst({
         where: (profiles, { eq, and }) => 
-          and(eq(profiles.id, profileId), eq(profiles.userId, ctx.user.id))
+          and(eq(profiles.id, input.id), eq(profiles.userId, ctx.user.id))
       });
 
       if (!existingProfile) {
@@ -150,22 +152,22 @@ export const profileRouter = j
             city: input.city,
             updatedAt: new Date(),
           })
-          .where(eq(profiles.id, profileId));
+          .where(eq(profiles.id, input.id));
 
         // Delete existing jobs and educations
-        await tx.delete(jobs).where(eq(jobs.profileId, profileId));
-        await tx.delete(educations).where(eq(educations.profileId, profileId));
+        await tx.delete(jobs).where(eq(jobs.profileId, input.id));
+        await tx.delete(educations).where(eq(educations.profileId, input.id));
 
         // Create new jobs
         if (input.jobs.length > 0) {
           await tx.insert(jobs).values(
             input.jobs.map((job) => ({
-              profileId: profileId,
+              profileId: input.id,
               jobTitle: job.jobTitle,
               employer: job.employer,
               description: job.description,
-              startDate: new Date(job.startDate),
-              endDate: new Date(job.endDate),
+              startDate: job.startDate,
+              endDate: job.endDate,
               city: job.city,
             }))
           );
@@ -175,13 +177,13 @@ export const profileRouter = j
         if (input.educations.length > 0) {
           await tx.insert(educations).values(
             input.educations.map((education) => ({
-              profileId: profileId,
+              profileId: input.id,
               school: education.school,
               degree: education.degree,
               field: education.field,
               description: education.description,
-              startDate: new Date(education.startDate),
-              endDate: new Date(education.endDate),
+              startDate: education.startDate,
+              endDate: education.endDate,
               city: education.city,
             }))
           );
@@ -189,7 +191,7 @@ export const profileRouter = j
 
         // Return the updated profile with relationships
         const updatedProfile = await tx.query.profiles.findFirst({
-          where: eq(profiles.id, profileId),
+          where: eq(profiles.id, input.id),
           with: {
             jobs: true,
             educations: true,

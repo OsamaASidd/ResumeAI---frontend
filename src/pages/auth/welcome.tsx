@@ -3,15 +3,19 @@ import { useQuery } from "@tanstack/react-query";
 import { authApi } from "../../api/endpoints/auth";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { useAuth } from "../../auth/use-auth";
 
 const WelcomePage = () => {
   const navigate = useNavigate();
+  const { isSignedIn } = useAuth();
   const { data, isLoading } = useQuery({
     queryKey: ["get-database-sync-status"],
     queryFn: authApi.getDatabaseSyncStatus,
     refetchInterval: (query) => {
       return query.state.data?.isSynced ? false : 1000;
     },
+    // Only run this query if the user is signed in
+    enabled: isSignedIn
   });
 
   useEffect(() => {

@@ -1,7 +1,7 @@
 // src/server/routers/user-router.js
-import { j, privateProcedure, publicProcedure } from '../lib/jstack';
-import { db } from '../db';
-import { accounts } from '../db/schema';
+import { j, privateProcedure, publicProcedure } from '../lib/jstack.js';
+import { db } from '../db/index.js';
+import { accounts } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
 
 export const userRouter = j

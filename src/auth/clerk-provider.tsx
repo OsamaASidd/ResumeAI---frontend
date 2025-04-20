@@ -10,6 +10,7 @@ interface ClerkProviderProps {
 export const CustomClerkProvider = ({ children }: ClerkProviderProps) => {
   if (!CLERK_PUBLISHABLE_KEY) {
     console.error("Missing CLERK_PUBLISHABLE_KEY environment variable");
+    return <div>Error: Missing CLERK_PUBLISHABLE_KEY</div>;
   }
   
   return (

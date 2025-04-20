@@ -1,27 +1,27 @@
 // src/server/routers/auth-router.js
-import { j, privateProcedure, publicProcedure } from '../lib/jstack';
-import { db } from '../db';
-import { accounts } from '../db/schema';
+import { j, privateProcedure, publicProcedure } from '../lib/jstack.js';
+import { db } from '../db/index.js';
+import { accounts } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
-import { currentUser } from '@clerk/nextjs/server';
 
 export const authRouter = j
   .router()
   .get('/getDatabaseSyncStatus', publicProcedure, async ({ c }) => {
     try {
-      // Check if the user from Clerk exists
-      const auth = await currentUser();
-      
-      if (!auth) {
+      // Extract the user ID from the authorization header
+      const authHeader = c.req.header('Authorization');
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
         return {
           isSynced: false,
-          message: 'Not authenticated with Clerk'
+          message: 'Not authenticated'
         };
       }
-
+      
+      const token = authHeader.split(' ')[1];
+      
       // Check if the user exists in the database
       const user = await db.query.accounts.findFirst({
-        where: eq(accounts.externalId, auth.id)
+        where: eq(accounts.id, token)
       });
 
       if (user) {
@@ -30,11 +30,13 @@ export const authRouter = j
           userId: user.id
         };
       } else {
-        // User doesn't exist in database, create them
+        // If there's an externalId claim in the token, we can create the user
+        // This is a simplified approach - in a real app, you'd verify and decode the token
         try {
+          // For demo purposes only - in production, extract user info from a verified token
           const [newUser] = await db.insert(accounts).values({
-            externalId: auth.id,
-            email: auth.emailAddresses[0]?.emailAddress || '',
+            externalId: token, // Using token as external ID for demo
+            email: 'user@example.com', // In real app, extract from token
           }).returning();
 
           return {

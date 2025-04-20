@@ -1,13 +1,14 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { viteBackendServer } from './vite-server-plugin.js'
+// Comment out the viteBackendServer import during development until it's fixed
+// import { viteBackendServer } from './vite-server-plugin.js'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     react(),
-    // Disable the backend server during development to avoid the import issue
-    viteBackendServer(),
+    // Disable the backend server plugin until issues are fixed
+    // viteBackendServer(),
   ],
   server: {
     port: 5173,
@@ -19,5 +20,8 @@ export default defineConfig({
         secure: false,
       },
     },
+  },
+  optimizeDeps: {
+    include: ['@clerk/clerk-react'],
   },
 })

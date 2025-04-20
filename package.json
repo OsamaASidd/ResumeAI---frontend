@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:server": "node --experimental-specifier-resolution=node src/server/server.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -15,7 +16,7 @@
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.28.2",
-    "@clerk/nextjs": "^4.29.9",
+    "@google/generative-ai": "^0.2.0",
     "@hono/node-server": "^1.8.2",
     "@hookform/resolvers": "^5.0.1",
     "@tailwindcss/vite": "^4.1.4",
