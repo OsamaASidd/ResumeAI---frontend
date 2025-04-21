@@ -3,6 +3,7 @@ import { j, privateProcedure, publicProcedure } from '../lib/jstack.js';
 import { db } from '../db/index.js';
 import { accounts } from '../db/schema.js';
 import { eq } from 'drizzle-orm';
+import { randomUUID } from 'crypto';
 
 export const authRouter = j
   .router()
@@ -19,9 +20,12 @@ export const authRouter = j
       
       const token = authHeader.split(' ')[1];
       
-      // Check if the user exists in the database
+      // First try to extract externalId (Clerk ID) from token claim
+      let externalId = token;
+      
+      // Check if the user exists in the database by externalId
       const user = await db.query.accounts.findFirst({
-        where: eq(accounts.id, token)
+        where: eq(accounts.externalId, externalId)
       });
 
       if (user) {
@@ -30,13 +34,24 @@ export const authRouter = j
           userId: user.id
         };
       } else {
-        // If there's an externalId claim in the token, we can create the user
-        // This is a simplified approach - in a real app, you'd verify and decode the token
+        // User doesn't exist, create a new account entry
         try {
-          // For demo purposes only - in production, extract user info from a verified token
+          // Generate a unique ID for the new user
+          const id = randomUUID();
+          
+          // For demo purposes - in production, extract user email from verified token
+          let email = 'user@example.com';
+          
+          // See if email is embedded in the token (simplified approach)
+          if (token.includes('@')) {
+            email = token.split(' ').find(part => part.includes('@')) || email;
+          }
+          
+          // Insert new account into database
           const [newUser] = await db.insert(accounts).values({
-            externalId: token, // Using token as external ID for demo
-            email: 'user@example.com', // In real app, extract from token
+            id,
+            externalId: externalId, 
+            email: email,
           }).returning();
 
           return {
