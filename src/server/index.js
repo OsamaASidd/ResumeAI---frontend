@@ -11,6 +11,18 @@ const api = j
   .router()
   .basePath('/api')
   .use(async (c, next) => {
+    // Debug logging of incoming requests
+    console.log(`[${new Date().toISOString()}] ${c.req.method} ${c.req.url}`);
+    
+    // Debug token if available
+    const authHeader = c.req.header('Authorization');
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      console.log(`Auth token present: ${token.substring(0, 15)}...`);
+    } else {
+      console.log('No auth token in request');
+    }
+    
     // CORS middleware
     c.res.headers.set('Access-Control-Allow-Origin', '*');
     c.res.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -23,7 +35,12 @@ const api = j
       return c.text('', 204);
     }
     
-    return await next();
+    try {
+      return await next();
+    } catch (error) {
+      console.error(`Error processing request ${c.req.method} ${c.req.url}:`, error);
+      throw error;
+    }
   })
   .onError((error, c) => {
     console.error("Server error:", error);

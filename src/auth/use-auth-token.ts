@@ -13,8 +13,14 @@ export const useAuthToken = () => {
       if (isSignedIn && session) {
         try {
           // Get token from Clerk session
-          const token = await session.getToken();
+          const token = await session.getToken({
+            template: "ResumeAi"
+          });
+
+          console.log("clerk signin AAA",isSignedIn);
+          console.log("clerk session BBB",session);
           
+                    
           // Set the token in the API client
           setAuthToken(token);
           setIsTokenSet(true);
@@ -29,13 +35,18 @@ export const useAuthToken = () => {
         // Clear token if not signed in
         setAuthToken(null);
         setIsTokenSet(false);
+        
+        if (session === null && isSignedIn === false) {
+          console.log("User is signed out - cleared auth token");
+        } else if (!session && isSignedIn !== false) {
+          console.log("Auth session not yet loaded");
+        }
       }
     };
 
     syncAuthToken();
     
-    // Set up periodic token refresh
-    const refreshInterval = setInterval(syncAuthToken, 10 * 60 * 1000); // Refresh every 10 minutes
+    const refreshInterval = setInterval(syncAuthToken, 5 * 60 * 1000);
     
     return () => {
       clearInterval(refreshInterval);
